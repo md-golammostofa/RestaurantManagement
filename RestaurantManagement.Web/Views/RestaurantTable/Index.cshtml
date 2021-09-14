@@ -1,0 +1,68 @@
+﻿@model IEnumerable<RestaurantManagement.Web.Models.clsTable>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Table List</h2>
+
+<p>
+    <a class="btn btn-success btn-sm" href="@Url.Action("Create", "RestaurantTable")">
+        <i class="fa fa-plus"></i> Add
+    </a>
+</p>
+<table class="table  table-bordered table-hover table-striped table-responsive my-box-shadow">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.TableName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TableCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Statuss)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.EntryUserID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EntryDate)
+        </th>*@
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TableName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TableCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Remarks)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Statuss)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.EntryUserID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EntryDate)
+        </td>*@
+        <td>
+            <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", "RestaurantTable", new { id = item.TableID })">
+                <i class="fa fa-pencil"></i>
+            </a>
+            <a class="btn btn-info btn-sm" href="@Url.Action("Details", "RestaurantTable", new { id = item.TableID })">
+                <i class="fa fa-eye"></i>
+            </a>
+        </td>
+    </tr>
+}
+
+</table>

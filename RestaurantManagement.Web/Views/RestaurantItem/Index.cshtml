@@ -1,0 +1,91 @@
+﻿@model IEnumerable<RestaurantManagement.Web.Models.clsItem>
+
+@{
+    ViewBag.Title = "Item List";
+}
+
+<h2>Item List</h2>
+
+<p>
+    <a class="btn btn-success btn-sm" href="@Url.Action("Create", "RestaurantItem" )">
+        <i class="fa fa-plus"></i> Add
+    </a>
+    @*@Html.ActionLink("Add Item", "Create")*@
+</p>
+<table class="table  table-bordered table-hover table-striped table-responsive my-box-shadow">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ItemCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.UnitPrice)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.Statuss)
+        </th>
+
+        @*<th>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </th>*@
+        @*<th>
+            @Html.DisplayNameFor(model => model.EntryUserID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EntryDate)
+        </th>*@
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ItemName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ItemCode)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.UnitPrice)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Statuss)
+        </td>
+
+        @*<td>
+            @Html.DisplayFor(modelItem => item.Remarks)
+        </td>*@
+        @*<td>
+            @Html.DisplayFor(modelItem => item.EntryUserID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EntryDate)
+        </td>*@
+        <td>
+            <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", "RestaurantItem", new { id = item.ItemID })">
+                <i class="fa fa-pencil"></i>
+            </a>
+            <a class="btn btn-info btn-sm" href="@Url.Action("Details", "RestaurantItem", new { id = item.ItemID })">
+                <i class="fa fa-eye"></i>
+            </a>
+
+            @*
+        @Html.ActionLink("Edit", "Edit", new { id = item.ItemID }) |
+        @Html.ActionLink("Details", "Details", new { id = item.ItemID })
+        |
+        @Html.ActionLink("Delete", "Delete", new { id=item.ItemID })*@
+        </td>
+    </tr>
+}
+
+</table>

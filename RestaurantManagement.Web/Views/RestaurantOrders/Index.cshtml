@@ -1,0 +1,106 @@
+﻿@model IEnumerable<RestaurantManagement.Web.Models.clsOrder>
+
+@{
+    ViewBag.Title = "Index";
+}
+@section styles{
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+}
+<h2>Index</h2>
+
+<p>
+    <a class="btn btn-success btn-sm" href="@Url.Action("Index", "RestaurantOrder")">
+        <i class="fa fa-plus"></i> Add
+    </a>
+
+
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.OrderCode)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerMobileNo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CustomerName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TableName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DiscountName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalDiscount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalAmount)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NetTotal)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Statuss)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EntryDate)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OrderCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerMobileNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TableName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscountName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalDiscount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NetTotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Statuss)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EntryDate)
+            </td>
+            <td>
+                <a class="btn btn-success btn-sm" href="@Url.Action("Edit", "Edit", new { id = item.OrderID })">
+                    <i class="fa fa-pencil"></i>
+                </a> |
+                <a class="btn btn-success btn-sm" href="@Url.Action("Details", "Details", new { id = item.OrderID })">
+                    <i class="fa fa-eye"></i>
+                </a>
+                @*
+                @Html.ActionLink("Edit", "Edit", new { id = item.OrderID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.OrderID })
+                |
+                        <a class="btn btn-success btn-sm" href="@Url.Action("Index", "RestaurantOrder")">
+            <i class="fa fa-plus"></i> Add
+        </a>
+                        <a class='btn btn-danger btn-sm' style='margin-left:5px' onclick=Delete("+data+")><i class='fa fa-trash'></i> Delete</a>";
+                        @Html.ActionLink("Delete", "Delete", new { id=item.OrderID })*@
+            </td>
+        </tr>
+    }
+
+</table>

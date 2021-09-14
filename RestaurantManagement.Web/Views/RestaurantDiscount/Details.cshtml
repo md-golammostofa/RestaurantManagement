@@ -1,0 +1,66 @@
+﻿@model RestaurantManagement.Web.Models.clsDiscount
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>clsDiscount</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DiscountName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DiscountName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DiscountPercentage)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DiscountPercentage)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Remarks)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Statuss)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Statuss)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EntryUserID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EntryUserID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EntryDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EntryDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.DiscountID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

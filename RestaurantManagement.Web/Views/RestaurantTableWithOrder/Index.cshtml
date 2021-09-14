@@ -1,0 +1,84 @@
+﻿@model IEnumerable<RestaurantManagement.Web.Models.clsTableVM>
+@{
+    /**/
+
+    /**/
+
+    ViewBag.Title = "Index";
+}
+
+
+<div class="row" style="padding-bottom:10px;">
+    @foreach (var item in Model)
+    {
+        var i = 1;
+        if (item.TableID == 1)
+        {
+    <a class="btn btn-success-my btn-lg pull-right" href="@Url.Action("AddOrder", "RestaurantTableWithOrder", new { tableid = item.TableID })">
+        <i class="fa fa-shopping-basket"></i>@item.TableName
+    </a>
+        }
+        i++;
+    }
+</div>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        var i = 1;
+        if (item.TableID != 1)
+        {
+            <a href="@Url.Action("AddOrder", "RestaurantTableWithOrder", new { tableid = item.TableID })">
+                <div class="col-md-2  mycard ">
+                    <div class="mycard-body" style="background-color:@item.TblBackColor;">
+                        
+
+                        <h4 style="padding-top:20px;">
+                            <i class="fa fa-user-circle"></i>
+                            @item.TableName
+                        </h4><p> @item.TblBooked </p>
+                    </div>
+                </div>
+            </a>
+        }
+        i++;
+    }
+</div>
+
+@*<div>
+
+        <input type="button" value="submit" onclick="popup()" />
+        <div class="success"></div>
+
+        <input name="notif" type="button" value="Shoow notif" onclick="$('.elem-demo').notify('Hello Box');" />
+
+
+
+
+        <div id="notifications">hi</div>
+
+
+
+    </div>*@
+
+@section  styles{
+
+
+    <link href="~/css/orderPage.css" rel="stylesheet" />
+
+
+
+}
+
+@section scripts {
+
+
+    <script>
+        $(window).load(function () {
+
+            setInterval(function () { $('.alert').fadeOut("fast") }, 2000);
+        });
+    </script>
+
+
+}
+

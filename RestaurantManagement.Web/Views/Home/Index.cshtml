@@ -1,0 +1,167 @@
+﻿@{
+                /**/
+
+                ViewBag.Title = "Home Page";
+}
+
+<div class="bg-black">
+    <div class="jumbotron ">
+        <div class=" overlay "></div>
+        <div class="inner">
+            <h1>Supreme Dine <small class="mysmall"> GOOD FOOD GOOD DRINKS</small></h1>
+        </div>
+    </div>
+</div>
+<section class="mydashboard">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="dashboard-item one">
+                <h4>  Current Time </h4>
+                <div id="MyClockDisplay" class="clock"></div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="dashboard-item one">
+                <div>
+                    <h4>  Order Over-View  </h4>
+
+                    <h3>  <i class="fa fa-shopping-cart"></i> @ViewBag.AvgDaily </h3>
+                    <p> AVARAGE ORDER DAILY </p>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-item one">
+                <div>
+                    <h4> Table Occupancy  </h4>
+                    <h3>  @ViewBag.TotalTableOrdered  Booked </h3>
+
+
+                    <p>Avaibility @ViewBag.FreeTableNum  </p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="dashboard-item">
+                <div>
+                    <h4> Top Moving Items  </h4>
+
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table mytable">
+
+                            @foreach (var item in ViewBag.movingList)
+                            {
+
+                            <tr>
+                                <td>@item.ItemName</td>
+                                <td>@item.UnitPrice</td>
+                            </tr>
+
+
+                            }
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-item">
+                <div>
+                    <h4> Latest Expences  </h4>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table mytable">
+                            @foreach (var item in ViewBag.LatestExpences)
+                            {
+
+                            <tr>
+                                <td class="lowtext">@item.ExpenseFor</td>
+                                <td class="lowtext">@item.Debit</td>
+
+                            </tr>
+
+
+                            }
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="dashboard-item">
+                <div>
+                    <h4> Recent Ordered/Invoiced</h4>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table mytable ">
+                            <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            </tr>
+
+                            @foreach (var item in ViewBag.RecentList)
+                            {
+
+                            <tr>
+                                <td class="lowtext">@item.ProductName</td>
+                                <td class="lowtext">@item.Quantity</td>
+                                <td class="lowtext">@item.Price TK</td>
+                            </tr>
+
+
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@section scripts{
+
+<script>
+        function showTime() {
+            var date = new Date();
+            var h = date.getHours(); // 0 - 23
+            var m = date.getMinutes(); // 0 - 59
+            var s = date.getSeconds(); // 0 - 59
+            var session = "AM";
+
+            if (h == 0) {
+                h = 12;
+            }
+
+            if (h > 12) {
+                h = h - 12;
+                session = "PM";
+            }
+
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+
+            var time = h + ":" + m + ":" + s + " " + session;
+            document.getElementById("MyClockDisplay").innerText = time;
+            document.getElementById("MyClockDisplay").textContent = time;
+
+            setTimeout(showTime, 1000);
+
+        }
+
+        showTime();
+</script>
+
+
+}

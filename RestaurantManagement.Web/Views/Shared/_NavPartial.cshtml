@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity
+
+<ul class="nav navbar-nav">
+    <li>@Html.ActionLink("Invoice List", "Index", "RestaurantOrder")</li>
+
+
+    <li>@Html.ActionLink("New Order", "Index", "RestaurantTableWithOrder")</li>
+
+    <li>@Html.ActionLink("Expenses", "Index", "RestaurantDRCR")</li>
+
+    @*@using Microsoft.AspNet.Identity*@
+    @*@if (Request.IsAuthenticated)
+    {
+
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Admin <span class="caret"></span>
+            </a>
+
+
+
+            <ul class="dropdown-menu">
+                <li>@Html.ActionLink("Items", "Index", "RestaurantItem")</li>
+                <li>@Html.ActionLink("Discount", "Index", "RestaurantDiscount")</li>
+                <li>@Html.ActionLink("Table", "Index", "RestaurantTable")</li>
+                <li>@Html.ActionLink("Deleted Invoices", "Index", "DeletedInvoices")</li>
+                <li>
+                    @User.Identity.GetUserName()
+                </li>
+            </ul>
+
+
+        </li>
+
+    }*@
+    </ul>
+
+
+
+
+
+

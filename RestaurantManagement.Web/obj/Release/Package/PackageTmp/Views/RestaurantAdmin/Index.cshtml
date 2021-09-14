@@ -1,0 +1,15 @@
+﻿@model RestaurantManagement.Web.Models.clsAdminIndex
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Hi, @Model.AdminOrNormal</h2>
+
+<div class="ollist">
+    <ol>
+        @foreach (var item in Model.LinkList)
+        {
+            <li>@Html.ActionLink(item.TextL, item.ActionL, item.ControllerL)</li>
+        }
+    </ol>
+</div>

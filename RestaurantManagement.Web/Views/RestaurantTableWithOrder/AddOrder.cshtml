@@ -1,0 +1,783 @@
+﻿@model RestaurantManagement.Web.Models.clsOrder
+
+@{
+    ViewBag.Title = "AddOrder";
+    ViewBag.PrintLink = "";
+}
+
+
+<h3 style="text-align:center;">Add Order</h3>
+
+
+
+
+
+
+    <div class="row">
+        <div class="col-md-4">
+
+
+            @Html.DropDownList("EName", null, htmlAttributes: new { @class = "form-control pull-right glow", Attribute = "readonly", @id = "ename" })
+
+        </div>
+        <div class="col-md-4 ">
+            <input type="text" hidden value="@ViewBag.ExistingOrderID" id="existingorderOID" />
+
+        </div>
+        <div class="col-md-4 ">
+
+            @Html.DropDownList("TableID", null, htmlAttributes: new { @class = "form-control pull-right glow", Attribute = "readonly" })
+
+
+
+        </div>
+    </div>
+
+
+
+
+<div class="container">
+
+
+    <div class="row invoice-row" style="padding-top:30px">
+
+        <div class="col-md-7 items">
+            <div class="row" style="padding-bottom:5px;">
+                <div class="col-md-6">
+                    <input type="text" id="productName" name="productName" style="border:none;border-bottom:1px solid green;" autocomplete="on" placeholder="Item Name" class="form-control" />
+                    <input type="text" id="pid" name="pid" hidden />
+                </div>
+            </div>
+
+
+            <table id="orderdetails" class="table table-bordered table-hover table-striped table-responsive">
+                <thead>
+                    <tr>
+
+                        <th class="success" style="width:25%">Item</th>
+                        <th class="success" style="width:20%">Price</th>
+                        <th class="success" style="width:30%">Quantity</th>
+                        <th class="success" style="width:15%">Amount</th>
+                        <th class="success" style="width:10%">Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+
+                    @if (ViewBag.Ostatus == "Billed")
+                    {
+                        ViewBag.PrintLink = "block";
+
+                    }
+                    else
+                    {
+                        ViewBag.PrintLink = "none";
+                    }
+
+
+
+
+                    @foreach (var order in ViewBag.OrderDetails)
+                    {
+                        <tr>
+                            <td style="display:none;">@order.ProductID</td>
+                            <td>@order.ProductName</td>
+                            <td>@order.UnitPrice</td>
+                            <td>
+
+                                <button class="btn btn-dark btn-sm pull-left minus-btn sub" id=""><i class="fa fa-minus"></i></button>
+
+                                <input type="number" id="txtQtyRow" name="txtQtyRow" min="1" value="@order.Quantity" onchange="getTotalRowAmount()" class="form-control myinputqty pull-left " />
+
+                                <button class="btn btn-dark btn-sm pull-left plus-btn add" id=""><i class="fa fa-plus"></i></button>
+
+                            </td>
+
+                            <td class="countable">@order.TotalAmount</td>
+                            <td><a data-itemId="0" href="#" class="deleteItem btn btn-sm btn-danger">X</a></td>
+                        </tr>
+
+
+
+
+                    }
+
+                </tbody>
+
+
+            </table>
+            <button id="saveOrder" type="submit" class="btn btn-sm btn-danger">Save Order </button>
+            <div class="pull-right action-btn-my" style="display:@ViewBag.ShowHideKitchenCopy"> @Html.ActionLink("Kitchen Copy", "PrintKitchenCopy", new { OrderID = ViewBag.ExistingOrderID })</div>
+
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-4 item-details">
+            <div class="row" style="padding-top:10px;">
+                <div class="col-md-4">
+                    Total
+                </div>
+                <div class="col-md-8">
+                    <input type="text" id="sum" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    Discount
+                </div>
+                <div class="col-md-8">
+
+
+
+                    @Html.DropDownList("DiscountID", null, htmlAttributes: new { @class = "form-control", @id = "discountPercent" })
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    Discount
+                </div>
+                <div class="col-md-8">
+                    <input type="number" id="txtDiscountAmount" name="txtDiscountAmount" class="form-control" readonly />
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-md-4">
+                    Net Amount
+                </div>
+                <div class="col-md-8">
+                    <input type="number" id="txtNetAmount" name="txtNetAmount" value="0" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    Received
+                </div>
+                <div class="col-md-8">
+                    <input type="number" id="rcvAmount" name="receivedAmount" value="0" min="1" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    Return
+                </div>
+                <div class="col-md-8">
+                    <input type="number" id="returnAmount" name="ReturnAmount" value="0" class="form-control" readonly />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    Remarks
+                </div>
+                <div class="col-md-8">
+                    <input type="text" id="remarks" name="remarks" class="form-control" />
+                </div>
+            </div>
+
+            <div class="row " style="padding:10px;">
+                <div class="col-md-6">
+                    <button id="btnBill" type="submit" style="display:@ViewBag.ShowHideBillBtn" class="btn btn-sm btn-warning pull-left">Bill Order</button>
+
+                </div>
+                <div class="col-md-6">
+                    <button id="btnInvoice" type="submit" style="display:@ViewBag.ShowHideInvoiceBtn" onClick="return confirm('Are you absolutely sure ?')" class="btn btn-sm btn-warning pull-right">Invoice Order</button>
+
+                </div>
+            </div>
+            @*<div class="row " style="padding:10px;">
+                <div class="col-md-6">
+                    <div class="pull-left action-btn-my-2" style="display:@ViewBag.PrintLink"> @Html.ActionLink("Print Bill", "PrintBillCopy", new { OrderID = ViewBag.ExistingOrderID })</div>
+                </div>
+                <div class="col-md-6">
+                    <div class="pull-right action-btn-my-2" style="display:@ViewBag.PrintLink"> @Html.ActionLink("Print Invoice", "PrintInvoiceCopy", new { OrderID = ViewBag.ExistingOrderID })</div>
+                </div>
+
+            </div>*@
+
+        </div>
+    </div>
+
+</div> @*end of container*@
+
+<div class="btl">
+
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+
+
+        //$(document).ready(function () {
+        //    $('.txtQtyRow').prop('disabled', true);
+        //    $('.plus-btn').click(function () {
+        //        $('.txtQtyRow').val(parseInt($('.txtQtyRow').val()) + 1);
+        //        getTotalRowAmount();
+        //    });
+        //    $('.minus-btn').click(function () {
+        //        $('.txtQtyRow').val(parseInt($('.txtQtyRow').val()) - 1);
+        //        getTotalRowAmount();
+        //        if ($('.txtQtyRow').val() == 0) {
+        //            $('.txtQtyRow').val(1);
+
+        //        }
+
+        //    });
+        //});
+
+        // cash return depending on recive amount
+        $('#rcvAmount').change(function () {
+
+            var net = document.getElementById("txtNetAmount").value;
+            var rcv = document.getElementById("rcvAmount").value;
+            var rtnamount = rcv - net;
+
+            document.getElementById("returnAmount").value = rtnamount;
+
+
+        });
+
+
+        $('.add').click(function () {
+            $(this).prev().val(+$(this).prev().val() + 1);
+            getTotalRowAmount();
+        });
+        $('.sub').click(function () {
+            if ($(this).next().val() > 1) $(this).next().val(+$(this).next().val() - 1);
+            if ($('#txtQtyRow').val() == 0) {
+                $('#txtQtyRow').val(1);
+
+            }
+            getTotalRowAmount();
+        });
+
+
+        $('.add2').click(function () {
+            $(this).prev().val(+$(this).prev().val() + 1);
+            getTotalRowAmount();
+        });
+        $('.sub2').click(function () {
+            if ($(this).next().val() > 1) $(this).next().val(+$(this).next().val() - 1);
+
+            getTotalRowAmount();
+        });
+
+
+
+
+        // calculates when page is loadded
+        $(document).ready(function () {
+            totalsum();
+            calculateall();
+        });
+
+        // calculates when total sum is changed by totalsum
+        $('#sum').change(function () {
+            calculateall();
+        });
+
+        // calculates when page is re-freshed
+        window.onload = function () {
+            totalsum();
+            calculateall();
+        };
+
+        // method to calculate the net & discount
+        function calculateall() {
+            var input = document.getElementById('txtDiscountAmount');
+            var select = document.getElementById('discountPercent');
+            var totalprice = document.getElementById('sum').value;
+            var netprice = document.getElementById('txtNetAmount');
+
+
+            var pecah = select.options;
+            var hasil = pecah[pecah.selectedIndex].text;
+
+
+            var amnt = hasil.split("_")[1]; // splits the percentage from dropdown, 1 is to take every thing after the dash
+            var disamount = Math.round((amnt * totalprice) / 100);
+            input.value = disamount;
+            netprice.value = totalprice - disamount;
+
+
+            select.onchange = function () {
+
+                var input = document.getElementById('txtDiscountAmount');
+                var select = document.getElementById('discountPercent');
+                var totalprice = document.getElementById('sum').value;
+                var netprice = document.getElementById('txtNetAmount');
+
+                var pecah = select.options;
+                var hasil = pecah[pecah.selectedIndex].text;
+
+
+                var amnt = hasil.split("_")[1]; // splits the percentage from dropdown, 1 is to take every thing after the dash
+                var disamount = Math.round((amnt * totalprice) / 100);
+                input.value = disamount;
+                netprice.value = totalprice - disamount;
+                var net = document.getElementById("txtNetAmount").value;
+                var rcv = document.getElementById("rcvAmount").value;
+                var rtnamount = rcv - net;
+
+                document.getElementById("returnAmount").value = rtnamount;
+
+            }
+
+            // rcv amount calculation
+            var net = document.getElementById("txtNetAmount").value;
+            var rcv = document.getElementById("rcvAmount").value;
+            var rtnamount = rcv - net;
+
+            document.getElementById("returnAmount").value = rtnamount;
+
+        }
+
+
+        $(function () {
+            $("#productName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '/RestaurantTableWithOrder/AutoComplete/',
+                        data: "{ 'prefix': '" + request.term + "'}",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+
+                        }
+
+                    });
+                },
+                select: function (e, i) {
+                    //$("#pid").val(i.item.val);
+                    //$("#price").val(i.item.valUnitPrice);
+
+                    this.value = "";
+                    //=============================================add column
+                    var detailsTableBody = $("#orderdetails tbody");
+
+                    var productItem = '<tr><td style="display:none;">' + i.item.valID + '</td><td>' + i.item.valItemName + '</td><td>' + i.item.valUnitPrice +
+                        '</td><td><input type="number" id="txtQtyRow" name="txtQtyRow" min="1" value="1" onchange="getTotalRowAmount()" class="form-control myinputqty pull-left " /></td><td class="countable">'
+                        + i.item.valUnitPrice + '</td><td><a data-itemId="0" href="#" class="deleteItem btn btn-sm btn-danger">X</a></td></tr>';
+                    detailsTableBody.append(productItem);
+
+
+                    //get row total and grand
+                    getTotalRowAmount();
+
+                    //clear
+
+                    $("#productName").val('');
+                    return false;
+                    //=============================================
+                },
+                minLength: 0
+            });
+        });
+
+        //get total
+        function getTotalRowAmount() {
+
+            var totalRowAmount = 0;
+            $.each($("#orderdetails tbody tr"), function () {
+
+                var p = $(this).find('td:eq(2)').html();
+                var q = $(this).find('td:eq(3) input[type="number"]').val();
+                var pq = parseFloat(p) * parseFloat(q);
+
+                $(this).find('td:eq(4)').html(pq); // .html() = parseFloat(p) * parseFloat(q);
+                totalRowAmount += pq;
+            });
+
+            $("#sum").val(totalRowAmount);
+            document.getElementById('productName').value = '';
+            totalsum();
+            calculateall();
+
+        }
+
+        //Add Multiple Order.
+        $("#addToList").click(function (e) {
+
+            e.preventDefault();
+
+
+
+            if ($.trim($("#productName").val()) == ""
+                || $.trim($("#price").val()) == ""
+                || $.trim($("#quantity").val()) == "") {
+
+                if ($.trim($("#productName").val()) == "") {
+                    $("#productName").focus();
+                    return;
+                } else if ($.trim($("#price").val()) == "") {
+                    $("#price").focus();
+                    return;
+                } else if ($.trim($("#quantity").val()) == "") {
+                    $("#quantity").focus();
+                    return;
+                }
+
+            } else {
+                var productID = $("#pid").val(),
+                    productName = $("#productName").val(),
+
+                    price = $("#price").val(),
+                    quantity = $("#quantity").val(),
+                    detailsTableBody = $("#orderdetails tbody");
+
+
+                var productItem = '<tr><td>' + productID + '</td><td>' + productName + '</td><td>' + price + '</td><td>' + quantity + '</td><td class="countable">' + (parseFloat(price) * parseInt(quantity)) + '</td><td><a data-itemId="0" href="#" class="deleteItem">Remove</a></td></tr>';
+                detailsTableBody.append(productItem);
+
+
+
+                clearItem();
+                totalsum();
+                calculateall();
+
+            }
+
+
+
+        });
+        //After Add A New Order In The List, Clear Clean The Form For Add More Order.
+        function clearItem() {
+            $("#pid").val('');
+            $("#productName").val('');
+            $("#price").val('');
+            $("#quantity").val('');
+        }
+        // After Add A New Order In The List, If You Want, You Can Remove It.
+        $(document).on('click', 'a.deleteItem', function (e) {
+            e.preventDefault();
+            var $self = $(this);
+            if ($(this).attr('data-itemId') == "0") {
+                $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800, function () {
+                    $(this).remove();
+
+                    totalsum();
+                    calculateall();
+                });
+            }
+
+            //get row total and grand
+            getTotalRowAmount();
+
+        });
+
+
+
+        function totalsum() {
+
+
+            var cls = document.getElementById("orderdetails").getElementsByTagName("td");
+            var sum = 0;
+            for (var i = 0; i < cls.length; i++) {
+                if (cls[i].className == "countable") {
+                    sum += isNaN(cls[i].innerHTML) ? 0 : parseInt(cls[i].innerHTML);
+                }
+            }
+            //  document.getElementById("result").innerHTML = "<tr><td> Total Balance </td><td>" + sum + "</td>
+            $("#sum").val(sum);
+
+
+
+
+        }
+
+
+
+        //======================================order
+        function saveOrder(data) {
+            return $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: "/RestaurantTableWithOrder/SaveOrder",
+                data: data,
+                success: function (result) {
+                    //alert(result);
+                    //location.reload();
+                   //  alert("Order Saved")
+                    // setTimeout("window.location.href  = '/RestaurantTableWithOrder/AddOrder?tableid="+@ViewBag.TID+"'", 2000);
+                   // setTimeout("window.location.href  = '/RestaurantTableWithOrder/Index?flag=Order'", 20000); // milliseconds, so 10 seconds = 10000ms
+                 window.location.href = "/RestaurantTableWithOrder/Index?flag=Order";
+                },
+                error: function () {
+                  //  alert("Order Saved")
+                   //  setTimeout("window.location.href  = '/RestaurantTableWithOrder/AddOrder?tableid="+@ViewBag.TID+"'", 2000);
+                  //  setTimeout("window.location.href  = '/RestaurantTableWithOrder/Index?flag=Order'", 20000);
+                    window.location.href = "/RestaurantTableWithOrder/Index?flag=Order";
+                }
+            });
+        }
+        //Collect Multiple Order List For Pass To Controller
+        $("#saveOrder").click(function (e) {
+
+            var ename = document.getElementById("ename").value;
+
+            if (ename == "" || ename == null) {
+                alert("Please select a Employee First");
+                return false;
+            }
+
+
+            // disable button
+            this.disabled = true;
+            e.preventDefault();
+
+            //save order
+            //==============================
+            var orderArr = [];
+            orderArr.length = 0;
+
+            $.each($("#orderdetails tbody tr"), function () {
+                var q = $(this).find('td:eq(3) input[type="number"]').val();
+                orderArr.push({
+                    ProductID: $(this).find('td:eq(0)').html(),
+                    ProductName: $(this).find('td:eq(1)').html(),
+                    UnitPrice: $(this).find('td:eq(2)').html(),
+                    Quantity: q, // $(this).find('td:eq(3)').html(),
+                    TotalAmount: $(this).find('td:eq(4)').html()
+                });
+            });
+
+            //CustomerMobileNo  ProductID, ProductName, Quantity, UnitPrice
+            var data = JSON.stringify({
+
+                TableID: $('#TableID').val(),                                      //$("#tid").val(),
+                OrderID: $("#existingorderOID").val(),
+                TotalAmount: $("#sum").val(),
+                DiscountID: $("#discountPercent").val(),
+                TotalDiscount: $("#txtDiscountAmount").val(),
+                NetTotal: $("#txtNetAmount").val(),
+                TableName: $('#TableID').text(),
+                OrderPostedBy: $('#ename').val(),
+                Remarks: $("#remarks").val(),
+
+                tblOrderDetails: orderArr
+            });
+
+            $.when(saveOrder(data)).then(function (response) {
+                console.log(response);
+            }).fail(function (err) {
+                console.log(err);
+            });
+        });
+        //======================================
+
+
+        //======================================invoice
+        function saveInvoice(data) {
+            return $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: "/RestaurantTableWithOrder/SaveInvoice",
+                data: data,
+                success: function (result) {
+                    //alert(result);
+                    //location.reload();
+                    // alert("Invoiced Saved")
+                    //setTimeout("window.location.href  = '/RestaurantTableWithOrder/Index?flag=Invoice'", 20000);
+                    window.location.href = "/RestaurantTableWithOrder/Index?flag=Invoice";
+                },
+                error: function () {
+                   // alert("Invoiced Saved")
+                   // setTimeout("window.location.href  = '/RestaurantTableWithOrder/Index?flag=Invoice'", 20000);
+                    window.location.href = "/RestaurantTableWithOrder/Index?flag=Invoice";
+                }
+            });
+        }
+        //Collect Multiple Order List For Pass To Controller
+        $("#btnInvoice").click(function (e) {
+
+            var ename = document.getElementById("ename").value;
+
+            if (ename == "" || ename == null) {
+                alert("Please select a Employee First");
+                return false;
+            }
+
+
+
+            var net = document.getElementById("txtNetAmount").value;
+            var rcv = document.getElementById("rcvAmount").value;
+            var payBack = rcv - net;
+            if (rcv == "" || rcv == 0) {
+                alert("Receive must be filled out");
+                return false;
+            }
+            if (payBack < 0) {
+                alert("Receive Amount is lower Than The Net total");
+                return false;
+            }
+
+
+            this.disabled = true;
+            e.preventDefault();
+
+            //save invoice
+            //==============================
+            var orderArr = [];
+            orderArr.length = 0;
+
+            $.each($("#orderdetails tbody tr"), function () {
+                var q = $(this).find('td:eq(3) input[type="number"]').val();
+                orderArr.push({
+                    ProductID: $(this).find('td:eq(0)').html(),
+                    ProductName: $(this).find('td:eq(1)').html(),
+                    UnitPrice: $(this).find('td:eq(2)').html(),
+                    Quantity: q, // $(this).find('td:eq(3)').html(),
+                    TotalAmount: $(this).find('td:eq(4)').html()
+                });
+            });
+
+            //CustomerMobileNo  ProductID, ProductName, Quantity, UnitPrice
+            var data = JSON.stringify({
+                TableID: $('#TableID').val(),
+                OrderID: $("#existingorderOID").val(),
+                TotalAmount: $("#sum").val(),
+                DiscountID: $("#discountPercent").val(),
+                TotalDiscount: $("#txtDiscountAmount").val(),
+                ReceivedAmount: $("#rcvAmount").val(),
+                ReturnedAmount: payBack,
+                TableName: $('#TableID').text(),
+                OrderPostedBy: $('#ename').val(),
+                NetTotal: $("#txtNetAmount").val(),
+                Remarks: $("#remarks").val(),
+
+                tblOrderDetails: orderArr
+            });
+
+            $.when(saveInvoice(data)).then(function (response) {
+                console.log(response);
+            }).fail(function (err) {
+                console.log(err);
+            });
+            //}
+        });
+
+        //======================================End Invoice
+
+
+
+
+        //========================Bill generate
+
+        //======================================Bill
+        function saveBill(data) {
+             $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: "/RestaurantTableWithOrder/SaveBill",
+                data: data,
+                success: function (result) {
+                    //alert(result);
+                    //location.reload();
+                  //  alert("Bill Saved")
+                   // setTimeout("window.location.href  = '/RestaurantTableWithOrder/AddOrder?tableid="+@ViewBag.TID+"'", 5000);
+                    window.location.href = "/RestaurantTableWithOrder/Index?flag=Billed";
+                },
+                error: function () {
+                   // alert("Bill Saved")
+                    //setTimeout("window.location.href  = '/RestaurantTableWithOrder/AddOrder?tableid="+@ViewBag.TID+"'", 5000);
+                  //  setTimeout("window.location.href  = '/RestaurantTableWithOrder/Index?flag=Billed'", 20000);
+                    window.location.href = "/RestaurantTableWithOrder/Index?flag=Billed";
+                }
+            });
+        }
+        //Collect Multiple Order List For Pass To Controller
+        $("#btnBill").click(function (e) {
+
+
+           var ename = document.getElementById("ename").value;
+
+            if (ename == "" || ename == null) {
+                alert("Please select a Employee First");
+                return false;
+            }
+
+
+
+
+            this.disabled = true;
+            e.preventDefault();
+
+            //save invoice
+            //==============================
+            var orderArr = [];
+            orderArr.length = 0;
+
+            $.each($("#orderdetails tbody tr"), function () {
+                var q = $(this).find('td:eq(3) input[type="number"]').val();
+                orderArr.push({
+                    ProductID: $(this).find('td:eq(0)').html(),
+                    ProductName: $(this).find('td:eq(1)').html(),
+                    UnitPrice: $(this).find('td:eq(2)').html(),
+                    Quantity: q, // $(this).find('td:eq(3)').html(),
+                    TotalAmount: $(this).find('td:eq(4)').html()
+                });
+            });
+
+            //CustomerMobileNo  ProductID, ProductName, Quantity, UnitPrice
+            var data = JSON.stringify({
+                TableID: $('#TableID').val(),
+                OrderID: $("#existingorderOID").val(),
+                TotalAmount: $("#sum").val(),
+                DiscountID: $("#discountPercent").val(),
+                TotalDiscount: $("#txtDiscountAmount").val(),
+                TableName: $('#TableID').text(),
+                OrderPostedBy: $('#ename').val(),
+                NetTotal: $("#txtNetAmount").val(),
+                Remarks: $("#remarks").val(),
+
+                tblOrderDetails: orderArr
+            });
+
+            $.when(saveBill(data)).then(function (response) {
+                console.log(response);
+            }).fail(function (err) {
+                console.log(err);
+            });
+            //}
+        });
+
+
+
+            // end Bill Generate
+
+//=============================
+
+            //select style
+
+
+      //=========================
+
+
+
+    </script>
+
+}

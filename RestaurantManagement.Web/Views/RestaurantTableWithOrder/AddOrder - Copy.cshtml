@@ -1,0 +1,310 @@
+﻿@model RestaurantManagement.Web.Models.clsOrder
+
+@{
+    /**/
+
+    ViewBag.Title = "AddOrder";
+}
+@{
+    
+}
+
+<h2>Add Order</h2>
+
+<h2>@ViewBag.Tname</h2>
+
+<input type="text" value="@ViewBag.TID" name="tid" id="tid" />
+
+@ViewBag.ExistingOrder
+
+<input type="text" value="@ViewBag.ExistingOrder" />
+
+<div class="container">
+    @using (Html.BeginForm())
+    {
+        <div class="row">
+
+            <div class="col-md-6">
+                <table id="detailsTable" class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:40%">Product</th>
+                            <th style="width:35%">Unit Price</th>
+                            <th style="width:25%">Quantity</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+
+                                <input type="text" id="productName" name="productName" autocomplete="off" placeholder="Product Name" class="form-control" />
+                                <input type="text" id="pid" name="pid" />
+                            </td>
+
+
+                            <td>
+                                <input readonly type="text" id="price" name="price" placeholder="Unit Price" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="number" id="quantity" name="quantity" placeholder="Quantity" min="1" class="form-control" required />
+                            </td>
+
+                            <td>
+                                <a id="addToList" class="btn btn-primary">Add To List</a>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="col-md-6">
+
+
+                <table id="orderdetails" class="table">
+                    <thead>
+                        <tr>
+                            <th style="width:15%">Product id</th>
+                            <th style="width:25%">Product</th>
+                            <th style="width:20%">Unit Price</th>
+                            <th style="width:20%">Quantity</th>
+                            <th style="width:20%">Amount</th>
+
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+
+
+                </table>
+                @*<button id="sinvoice" type="submit" class="btn btn-warning ">Invoice Order</button>*@
+                <button id="saveOrder" type="submit" class="btn btn-success pull-right">Save Order</button>
+
+            </div>
+
+
+        </div> @*end of row*@
+    }
+</div> @*end of container*@
+
+
+
+
+
+
+<div>
+
+
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+
+
+@section scripts{
+
+    <script type="text/javascript">
+
+        $(function () {
+            $("#productName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '/RestaurantTableWithOrder/AutoComplete/',
+                        data: "{ 'prefix': '" + request.term + "'}",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            alert(response.responseText);
+
+                        },
+                        failure: function (response) {
+                            alert(response.responseText);
+
+                        }
+                    });
+                },
+                select: function (e, i) {
+                    $("#pid").val(i.item.val);
+                    $("#price").val(i.item.valUnitPrice);
+                },
+                minLength: 1
+            });
+        });
+
+
+
+
+        //Add Multiple Order.
+        $("#addToList").click(function (e) {
+            e.preventDefault();
+
+            if ($.trim($("#productName").val()) == ""
+                || $.trim($("#price").val()) == ""
+                || $.trim($("#quantity").val()) == "") {
+
+                if ($.trim($("#productName").val()) == "") {
+                    $("#productName").focus();
+                    return;
+                } else if ($.trim($("#price").val()) == "") {
+                    $("#price").focus();
+                    return;
+                } else if ($.trim($("#quantity").val()) == "") {
+                    $("#quantity").focus();
+                    return;
+                }
+
+            } else {
+                var productID = $("#pid").val(),
+                    productName = $("#productName").val(),
+
+                    price = $("#price").val(),
+                    quantity = $("#quantity").val(),
+                    detailsTableBody = $("#orderdetails tbody");
+
+                var productItem = '<tr><td>' + productID + '</td><td>' + productName + '</td><td>' + price + '</td><td>' + quantity + '</td><td>' + (parseFloat(price) * parseInt(quantity)) + '</td><td><a data-itemId="0" href="#" class="deleteItem">Remove</a></td></tr>';
+                detailsTableBody.append(productItem);
+
+                var sum1 = 0;
+                
+                $("#category tr").not(':first').not(':last').each(function () {
+                    sum1 += getnum($(this).find("td:eq(4)").text());
+                   
+                    function getnum(t) {
+                        if (isNumeric(t)) {
+                            return parseInt(t, 10);
+                        }
+                        return 0;
+                        function isNumeric(n) {
+                            return !isNaN(parseFloat(n)) && isFinite(n);
+                        }
+                    }
+                });
+                var total =  '<tr>Total: <td></td> <td></td> <td></td> <td></td> <td>'+sum1+'</td>  </tr>'
+                
+                detailsTableBody.append(total);
+
+
+
+
+
+
+
+
+
+
+
+                
+                clearItem();
+            }
+        });
+        //After Add A New Order In The List, Clear Clean The Form For Add More Order.
+        function clearItem() {
+            $("#pid").val('');
+            $("#productName").val('');
+            $("#price").val('');
+            $("#quantity").val('');
+        }
+        // After Add A New Order In The List, If You Want, You Can Remove It.
+        $(document).on('click', 'a.deleteItem', function (e) {
+            e.preventDefault();
+            var $self = $(this);
+            if ($(this).attr('data-itemId') == "0") {
+                $(this).parents('tr').css("background-color", "#ff6347").fadeOut(800, function () {
+                    $(this).remove();
+                });
+            }
+        });
+        //After Click Save Button Pass All Data View To Controller For Save Database
+        function saveOrder(data) {
+            return $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: "/RestaurantTableWithOrder/SaveOrder",
+                data: data,
+                success: function (result) {
+                    alert(result);
+                    location.reload();
+                },
+                error: function () {
+                    alert("Error!")
+                }
+            });
+        }
+        //Collect Multiple Order List For Pass To Controller
+        $("#saveOrder").click(function (e) {
+
+            alert("hello");
+            e.preventDefault();
+
+            //==============================
+            //if ($.trim($("#mobileNo").val()) == "" || $.trim($("#name").val()) == "") {
+
+            //    alert("hello3");
+            //    //return
+            //    if ($.trim($("#mobileNo").val()) == "") {
+            //        $("#mobileNo").focus();
+            //        return;
+            //    } else if ($.trim($("#name").val()) == "") {
+            //        $("#name").focus();
+            //        return;
+            //    }
+            //    return;
+            //} else {
+            //    alert("hello2");
+            //save
+            //==============================
+            var orderArr = [];
+            orderArr.length = 0;
+
+            $.each($("#orderdetails tbody tr"), function () {
+                orderArr.push({
+                    ProductID: $(this).find('td:eq(0)').html(),
+                    ProductName: $(this).find('td:eq(1)').html(),
+                    UnitPrice: $(this).find('td:eq(2)').html(),
+                    Quantity: $(this).find('td:eq(3)').html(),
+                    TotalAmount: $(this).find('td:eq(4)').html()
+                });
+            });
+
+            //CustomerMobileNo  ProductID, ProductName, Quantity, UnitPrice
+            var data = JSON.stringify({
+                TableID: $("#tid").val(),
+
+                tblOrderDetails: orderArr
+            });
+
+            $.when(saveOrder(data)).then(function (response) {
+                console.log(response);
+            }).fail(function (err) {
+                console.log(err);
+            });
+            //}
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+}

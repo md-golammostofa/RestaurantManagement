@@ -1,0 +1,141 @@
+﻿@model IEnumerable<RestaurantManagement.Web.Models.clsDRCR>
+
+    @{
+    ViewBag.Title = "Expense List";
+    }
+
+    <h2>Expense List</h2>
+
+
+    <div class="row search-section">
+        @using (Html.BeginForm("Index", "RestaurantDRCR"))
+        {
+
+
+        <div class="col-md-1">
+        </div>
+        <div class="col-md-4">
+            <label for="startdate">Start date:</label>
+
+            <input class="form-control" type="date" id="startdate" name="startdate" value="@ViewBag.todaysdate">
+        </div>
+        <div class="col-md-4">
+            <label for="startdate">To date:</label>
+
+            <input class="form-control" type="date" id="todate" name="todate" value="@ViewBag.todayedate">
+        </div>
+
+
+
+
+        <div class="col-md-2">
+            <label for="search">Search &nbsp; &nbsp; </label>
+            <br />
+            <input type="submit" class="btn btn-success" name="printdownload" id="search" value="search">
+        </div>
+
+        <div class="col-md-1">
+        </div>
+
+
+
+
+
+        }
+    </div>
+
+
+
+    <p>
+        <a class="btn btn-success btn-sm" href="@Url.Action("Create", "RestaurantDRCR" )">
+            <i class="fa fa-plus"></i> Add
+        </a>
+    </p>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar2">
+        <table class="table  table-bordered table-hover table-striped table-responsive my-box-shadow">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.EntryDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ExpenseFor)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Debit)
+                </th>
+                @*
+                <th>
+                    @Html.DisplayNameFor(model => model.Credit)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Balance)
+                </th>*@
+                <th>
+                    @Html.DisplayNameFor(model => model.Remarks)
+                </th>
+                @*
+                <th>
+                    @Html.DisplayNameFor(model => model.Statuss)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EntryUserID)
+                </th>*@
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td class="expense-td">
+                    @Html.DisplayFor(modelItem => item.EntryDate)
+                </td>
+                <td class="expense-td">
+                    @Html.DisplayFor(modelItem => item.ExpenseFor)
+                </td>
+                <td class="expense-td">
+                    @Html.DisplayFor(modelItem => item.Debit)
+                </td>
+                @*
+                <td>
+                    @Html.DisplayFor(modelItem => item.Credit)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Balance)
+                </td>*@
+                <td class="expense-td">
+                    @Html.DisplayFor(modelItem => item.Remarks)
+                </td>
+                @*
+                <td>
+                    @Html.DisplayFor(modelItem => item.Statuss)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EntryUserID)
+                </td>*@
+                <td class="expense-td">
+                    <a class="btn btn-warning btn-sm" href="@Url.Action(" Edit", "RestaurantDRCR" , new { id=item.DRCRID })">
+                        <i class="fa fa-pencil"></i>
+                    </a>
+                    <a class="btn btn-info btn-sm" href="@Url.Action(" Details", "RestaurantDRCR" , new { id=item.DRCRID })">
+                        <i class="fa fa-eye"></i>
+                    </a>
+
+                    @*
+                    @Html.ActionLink("Edit", "Edit", new { id = item.DRCRID }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.DRCRID })
+                    |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.DRCRID })*@
+                </td>
+            </tr>
+            }
+            <tr>
+                <td></td>
+                <td class="expense-td-total">Total Expences :</td>
+                <td class="expense-td-total">@if (ViewBag.Total != null){ @ViewBag.Total; }</td>
+                <td></td>
+                <td></td>
+
+            </tr>
+
+        </table>
+    </div>

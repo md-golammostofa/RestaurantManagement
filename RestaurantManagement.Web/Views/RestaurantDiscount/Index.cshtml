@@ -1,0 +1,75 @@
+﻿@model IEnumerable<RestaurantManagement.Web.Models.clsDiscount>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Discount List</h2>
+
+<p>
+    <a class="btn btn-success btn-sm" href="@Url.Action("Create", "RestaurantDiscount")">
+        <i class="fa fa-plus"></i> Add
+    </a>
+
+</p>
+<table class="table  table-bordered table-hover table-striped table-responsive my-box-shadow">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DiscountName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DiscountPercentage)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Statuss)
+        </th>
+        @*<th>
+            @Html.DisplayNameFor(model => model.EntryUserID)
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.EntryDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DiscountName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DiscountPercentage)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Remarks)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Statuss)
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.EntryUserID)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.EntryDate)
+        </td>
+        <td>
+
+            <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", "RestaurantDiscount", new { id = item.DiscountID })">
+                <i class="fa fa-pencil"></i>
+            </a>
+            <a class="btn btn-info btn-sm" href="@Url.Action("Details", "RestaurantDiscount", new { id = item.DiscountID })">
+                <i class="fa fa-eye"></i>
+            </a>
+
+            @*@Html.ActionLink("Edit", "Edit", new { id = item.DiscountID }) |
+            @Html.ActionLink("Details", "Details", new { id = item.DiscountID })
+            |
+        @Html.ActionLink("Delete", "Delete", new { id=item.DiscountID })*@
+        </td>
+    </tr>
+}
+
+</table>
